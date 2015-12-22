@@ -9,7 +9,7 @@
 #include <functional>
 #include <condition_variable>
 
-namespace fpe 
+namespace tp 
 {
 	/**
 	*  Simple ThreadPool that creates `ThreadCount` threads upon its creation,
@@ -20,7 +20,6 @@ namespace fpe
 	template <unsigned int ThreadCount = 10>
 	class ThreadPool 
 	{
-
 		std::array<std::thread, ThreadCount> m_threads;
 		std::list<std::function<void(void)> > m_queue;
 
