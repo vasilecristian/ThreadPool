@@ -10,28 +10,19 @@ namespace tp
 		, m_finished(ATOMIC_VAR_INIT(false))
 	{
 		for (unsigned int i = 0; i < m_threadCount; ++i)
-			m_threads[i] = std::move(std::thread([this, i]{ this->Task(); }));
+			m_threads.push_back(std::thread([this, i]{ this->Task(); }));
 	}
 
-	/**
-	*  JoinAll on deconstruction
-	*/
 	ThreadPool::~ThreadPool()
 	{
 		JoinAll();
 	}
 
-	/**
-	*  Get the number of threads in this pool
-	*/
 	inline unsigned ThreadPool::Size() const
 	{
 		return m_threadCount;
 	}
 
-	/**
-	*  Get the number of jobs left in the queue.
-	*/
 	inline unsigned ThreadPool::JobsRemaining()
 	{
 		std::lock_guard<std::mutex> guard(m_queueMutex);
