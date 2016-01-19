@@ -38,10 +38,9 @@ namespace tp
 		inline unsigned JobsRemaining();
 
 		/**
-		*  Add a new job to the pool. If there are no jobs in the queue,
+		*  Add a new job to the pool. If there are new jobs in the queue,
 		*  a thread is woken up to take the job. If all threads are busy,
-		*  the job is added to the end of the queue.
-		*/
+		*  the job is added to the end of the queue.*/
 		void AddJob(std::function<void(void)> job);
 
 		/**
