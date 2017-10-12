@@ -17,9 +17,8 @@
       <MinimalRebuild>false</MinimalRebuild>
       <StringPooling>true</StringPooling>
       <ExceptionHandling>false</ExceptionHandling>
-      <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalOptions>/wd4530 /we4715 /we4716 /Zc:inline %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/wd4530 /we4715 /we4716 /we4150 /Zc:inline /Zm400 %(AdditionalOptions)</AdditionalOptions>
       <CompileAsWinRT>false</CompileAsWinRT>
     </ClCompile>
   </ItemDefinitionGroup>
