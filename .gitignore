@@ -27,3 +27,7 @@
 *.out
 *.app
 *.xcuserstate
+*.xcuserstate
+*.xcuserstate
+prj/xcode4/ios/ThreadPool.xcodeproj/project.xcworkspace/xcuserdata/vasile.cristian.xcuserdatad/UserInterfaceState.xcuserstate
+prj/xcode4/macos/ThreadPool.xcodeproj/project.xcworkspace/xcuserdata/vasile.cristian.xcuserdatad/UserInterfaceState.xcuserstate
