@@ -5,12 +5,17 @@ namespace tp
 
 	ThreadPool::ThreadPool(unsigned int threadCount)
 		: m_threadCount(threadCount)
-		, m_jobsLeft(ATOMIC_VAR_INIT(0))
-		, m_bailout(ATOMIC_VAR_INIT(false))
-		, m_finished(ATOMIC_VAR_INIT(false))
+		, m_jobsLeft{0}
+		, m_bailout{false}
+		, m_finished{false}
 	{
 		for (unsigned int i = 0; i < m_threadCount; ++i)
-			m_threads.push_back(std::thread([this, i]{ this->Task(); }));
+		{
+			m_threads.push_back(std::thread([this, i]
+			{
+				this->Task();
+			}));
+		}
 	}
 
 	ThreadPool::~ThreadPool()
@@ -18,12 +23,12 @@ namespace tp
 		JoinAll();
 	}
 
-	inline unsigned ThreadPool::Size() const
+	uint32_t ThreadPool::Size() const
 	{
 		return m_threadCount;
 	}
 
-	inline unsigned ThreadPool::JobsRemaining()
+	size_t ThreadPool::JobsRemaining()
 	{
 		std::lock_guard<std::mutex> guard(m_queueMutex);
 		return m_queue.size();
@@ -53,8 +58,12 @@ namespace tp
 			m_jobAvailableVar.notify_all();
 
 			for (auto &x : m_threads)
+			{
 				if (x.joinable())
+				{
 					x.join();
+				}
+			}
 			m_finished = true;
 		}
 	}
@@ -65,7 +74,12 @@ namespace tp
 		if (m_jobsLeft > 0)
 		{
 			std::unique_lock<std::mutex> lk(m_waitMutex);
-			m_waitVar.wait(lk, [this]{ return this->m_jobsLeft == 0; });
+			
+			m_waitVar.wait(lk, [this]
+			{
+				return this->m_jobsLeft == 0;
+			});
+			
 			lk.unlock();
 		}
 	}
@@ -89,7 +103,10 @@ namespace tp
 		std::unique_lock<std::mutex> job_lock(m_queueMutex);
 
 		// Wait for a job if we don't have any.
-		m_jobAvailableVar.wait(job_lock, [this]{ return m_queue.size() || m_bailout; });
+		m_jobAvailableVar.wait(job_lock, [this]
+		{
+			return m_queue.size() || m_bailout;
+		});
 
 		// Get job from the queue
 		if (!m_bailout)

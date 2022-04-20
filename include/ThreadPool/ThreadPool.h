@@ -12,30 +12,22 @@
 namespace tp 
 {
 	/**
-	*  Simple ThreadPool that creates `ThreadCount` threads upon its creation,
+	*  Simple ThreadPool that creates `threadCount` threads upon its creation,
 	*  and pulls from a queue to get new jobs. The default is 10 threads.
-	*
-	*  This class requires a number of c++11 features be present in your compiler.
-	*/
+	*  This class requires a number of c++11 features be present in your compiler.*/
 	class ThreadPool 
 	{
 	public:
 		ThreadPool(unsigned int threadCount);
 
-		/**
-		*  JoinAll on deconstruction
-		*/
+		/** JoinAll on deconstruction */
 		~ThreadPool();
 
-		/**
-		*  Get the number of threads in this pool
-		*/
-		inline unsigned Size() const;
+		/** Get the number of threads in this pool */
+		uint32_t Size() const;
 
-		/**
-		*  Get the number of jobs left in the queue.
-		*/
-		inline unsigned JobsRemaining();
+		/** Get the number of jobs left in the queue.*/
+		size_t JobsRemaining();
 
 		/**
 		*  Add a new job to the pool. If there are new jobs in the queue,
@@ -51,8 +43,7 @@ namespace tp
 		*  The queue will be empty after this call, and the threads will
 		*  be done. After invoking `ThreadPool::JoinAll`, the pool can no
 		*  longer be used. If you need the pool to exist past completion
-		*  of jobs, look to use `ThreadPool::WaitAll`.
-		*/
+		*  of jobs, look to use `ThreadPool::WaitAll`.*/
 		void JoinAll(bool WaitForAll = true);
 
 		/**
@@ -63,7 +54,7 @@ namespace tp
 		void WaitAll();
 
 	private:
-		unsigned int m_threadCount;
+		uint32_t m_threadCount;
 		std::vector<std::thread> m_threads;
 		std::list<std::function<void(void)> > m_queue;
 
