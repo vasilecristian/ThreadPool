@@ -61,7 +61,7 @@
 		24889CCC28106FC000EA2BE4 = {
 			isa = PBXGroup;
 			children = (
-				24889CE12810703500EA2BE4 /* Dependencies */,
+				24F1D8BB28113280003D69FE /* Dependencies */,
 				24889CDF2810701500EA2BE4 /* main.cpp */,
 				24889CD628106FC000EA2BE4 /* Products */,
 				24889CEA2810706C00EA2BE4 /* Frameworks */,
@@ -74,14 +74,6 @@
 				24889CD528106FC000EA2BE4 /* test */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		24889CE12810703500EA2BE4 /* Dependencies */ = {
-			isa = PBXGroup;
-			children = (
-				24889CE22810705B00EA2BE4 /* ThreadPool.xcodeproj */,
-			);
-			path = Dependencies;
 			sourceTree = "<group>";
 		};
 		24889CE32810705B00EA2BE4 /* Products */ = {
@@ -97,6 +89,14 @@
 			children = (
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		24F1D8BB28113280003D69FE /* Dependencies */ = {
+			isa = PBXGroup;
+			children = (
+				24889CE22810705B00EA2BE4 /* ThreadPool.xcodeproj */,
+			);
+			name = Dependencies;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

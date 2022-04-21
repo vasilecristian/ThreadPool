@@ -8,8 +8,19 @@
 #include <iostream>
 #include "ThreadPool/ThreadPool.h"
 
-int Test1()
+#define TEST_INIT(nameOfTest)	\
+	std::string testName = nameOfTest;	\
+	int testReturnValue = 0;
+
+#define TEST_RETURN_VALUE testReturnValue
+
+#define CHECK(condition) if(!(condition)) { std::cout << testName << " failed! (" << __FILE__ << ":" << __LINE__ << ")" << std::endl; testReturnValue++; }	\
+						 else { std::cout << testName << " passed!" << std::endl; }
+
+int Test1(std::string name)
 {
+	TEST_INIT(name);
+	
 	// Arrange
 	tp::ThreadPool pool(10);
 	std::mutex protectedCode;
@@ -29,16 +40,20 @@ int Test1()
 	pool.JoinAll();
 	
 	// Assert
-	return (jobsQuewed == jobsExecuted) ? 0 : 1;
+	CHECK(jobsQuewed == jobsExecuted);
+	
+	
+	return TEST_RETURN_VALUE;
 }
 
 int main(int argc, const char * argv[])
 {
+	int returnValue = 0;
 	std::cout << "Tests Started...\n";
 	
-	int a = Test1();
+	returnValue += Test1("Test 1");
 	
-	return a;
+	return returnValue;
 }
 
 
