@@ -6,7 +6,7 @@ namespace tp
 	ThreadPool::ThreadPool(unsigned int threadCount)
 		: m_threadCount(threadCount)
 		, m_jobsLeft{0}
-		, m_bailout{false}
+		, m_stopAllJobs{false}
 		, m_finished{false}
 	{
 		for (unsigned int i = 0; i < m_threadCount; ++i)
@@ -30,16 +30,16 @@ namespace tp
 
 	size_t ThreadPool::JobsRemaining()
 	{
-		std::lock_guard<std::mutex> guard(m_queueMutex);
-		return m_queue.size();
+		std::lock_guard<std::mutex> guard(m_jobsQueueMutex);
+		return m_jobsQueue.size();
 	}
 
 	void ThreadPool::AddJob(std::function<void(void)> job)
 	{
-		std::lock_guard<std::mutex> guard(m_queueMutex);
-		m_queue.emplace_back(job);
+		std::lock_guard<std::mutex> guard(m_jobsQueueMutex);
+		m_jobsQueue.emplace_back(job);
 		++m_jobsLeft;
-		m_jobAvailableVar.notify_one();
+		m_jobAvailableCondVar.notify_one();
 	}
 
 	
@@ -54,8 +54,8 @@ namespace tp
 
 			// note that we're done, and wake up any thread that's
 			// waiting for a new job
-			m_bailout = true;
-			m_jobAvailableVar.notify_all();
+			m_stopAllJobs = true;
+			m_jobAvailableCondVar.notify_all();
 
 			for (auto &x : m_threads)
 			{
@@ -77,6 +77,7 @@ namespace tp
 			
 			m_waitVar.wait(lk, [this]
 			{
+				// stop waiting only if:
 				return this->m_jobsLeft == 0;
 			});
 			
@@ -88,10 +89,13 @@ namespace tp
 	
 	void ThreadPool::Task()
 	{
-		while (!m_bailout)
+		while (!m_stopAllJobs)
 		{
+			// Get the next job and Execute it!
 			NextJob()();
+			
 			--m_jobsLeft;
+
 			m_waitVar.notify_one();
 		}
 	}
@@ -100,19 +104,20 @@ namespace tp
 	std::function<void(void)> ThreadPool::NextJob()
 	{
 		std::function<void(void)> res;
-		std::unique_lock<std::mutex> job_lock(m_queueMutex);
+		std::unique_lock<std::mutex> job_lock(m_jobsQueueMutex);
 
 		// Wait for a job if we don't have any.
-		m_jobAvailableVar.wait(job_lock, [this]
+		m_jobAvailableCondVar.wait(job_lock, [this]
 		{
-			return m_queue.size() || m_bailout;
+			// stop waiting only if:
+			return m_jobsQueue.size() || m_stopAllJobs;
 		});
 
 		// Get job from the queue
-		if (!m_bailout)
+		if (!m_stopAllJobs)
 		{
-			res = m_queue.front();
-			m_queue.pop_front();
+			res = m_jobsQueue.front();
+			m_jobsQueue.pop_front();
 		}
 		else
 		{

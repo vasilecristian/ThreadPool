@@ -31,6 +31,7 @@
 *.xcuserstate
 /prj/xcode4/ios/obj
 /prj/xcode4/macos/obj
+prj/vs2019/obj/
 *.pdb
 prj/vs2019/.vs/test/v16/.suo
 prj/vs2019/.vs/test/v16/Browse.VC.db
@@ -44,5 +45,10 @@ prj/vs2019/Debug/test.log
 *.tlog
 prj/vs2019/Debug/test.vcxproj.FileListAbsolute.txt
 *.idb
-prj/vs2019/obj/x32/Debug/ThreadPool.log
 *.user
+*.iobj
+*.ipdb
+prj/vs2019/x64/Debug/test.log
+prj/vs2019/x64/Release/test.log
+prj/vs2019/x64/Debug/test.vcxproj.FileListAbsolute.txt
+prj/vs2019/x64/Release/test.vcxproj.FileListAbsolute.txt
